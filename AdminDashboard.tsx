@@ -45,16 +45,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const checkAISystem = async () => {
     setAiStatus('checking');
     try {
+      if (!process.env.API_KEY) {
+        throw new Error("Key is missing in environment");
+      }
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: 'Hi',
+        contents: 'Test connection',
         config: { maxOutputTokens: 5 }
       });
       if (response.text) setAiStatus('active');
       else setAiStatus('error');
     } catch (e) {
-      console.error(e);
+      console.error("Gemini Diagnostic Error:", e);
       setAiStatus('error');
     }
   };
@@ -229,7 +232,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </span>
                  </div>
                  <div className="text-[10px] font-mono text-gray-500 truncate bg-black/40 p-2 rounded-lg">
-                    Key: {process.env.API_KEY ? `${process.env.API_KEY.substring(0, 8)}...` : 'غير معرف'}
+                    Key: {process.env.API_KEY ? `${process.env.API_KEY.substring(0, 8)}...` : 'غير معرف في النظام'}
                  </div>
                  <button onClick={checkAISystem} disabled={aiStatus === 'checking'} className="w-full bg-white/5 border border-white/10 py-2 rounded-xl text-[10px] font-black hover:bg-white/10 transition-all">
                    {aiStatus === 'checking' ? 'جاري الفحص...' : 'فحص حالة المفتاح'}

@@ -4,7 +4,6 @@ import { Video } from './types';
 const CLOUD_NAME = 'dlrvn33p0'.trim();
 const COMMON_TAG = 'hadiqa_v4';
 
-// الأقسام الرسمية الثمانية لضمان التوزيع
 const TARGET_CATEGORIES = [
   'هجمات مرعبة',
   'رعب حقيقي',
@@ -16,9 +15,6 @@ const TARGET_CATEGORIES = [
   'صدمه'
 ];
 
-/**
- * جلب الفيديوهات مع توزيعها تلقائياً على الأقسام الجديدة
- */
 export const fetchCloudinaryVideos = async (): Promise<Video[]> => {
   try {
     const timestamp = new Date().getTime();
@@ -30,6 +26,7 @@ export const fetchCloudinaryVideos = async (): Promise<Video[]> => {
     });
 
     if (!response.ok) {
+      console.error(`Cloudinary Fetch Failed: Status ${response.status}. Make sure "Resource List" is enabled in Cloudinary Security settings.`);
       const cached = localStorage.getItem('app_videos_cache');
       return cached ? JSON.parse(cached) : [];
     }
@@ -39,7 +36,7 @@ export const fetchCloudinaryVideos = async (): Promise<Video[]> => {
     
     return mapCloudinaryData(resources);
   } catch (error) {
-    console.error('Fetch Error:', error);
+    console.error('Network Error fetching from Cloudinary:', error);
     const cached = localStorage.getItem('app_videos_cache');
     return cached ? JSON.parse(cached) : [];
   }
@@ -52,8 +49,6 @@ const mapCloudinaryData = (resources: any[]): Video[] => {
     const optimizedUrl = `${baseUrl}/q_auto,f_auto/v${res.version}/${res.public_id}.${res.format}`;
     const posterUrl = `${baseUrl}/q_auto,f_auto,so_0/v${res.version}/${res.public_id}.jpg`;
     
-    // توزيع الفيديوهات الـ 14 (أو أكثر) على الـ 8 أقسام بشكل دوري
-    // هذا يضمن امتلاء كل الصفحات بفيديوهات موجودة حالياً
     const assignedCategory = TARGET_CATEGORIES[index % TARGET_CATEGORIES.length];
     const title = res.context?.custom?.caption || `فيديو ${assignedCategory} رقم ${index + 1}`;
 
@@ -66,7 +61,7 @@ const mapCloudinaryData = (resources: any[]): Video[] => {
       title: title,
       likes: 0,
       views: 0,
-      category: assignedCategory, // تم الربط بالقسم الجديد
+      category: assignedCategory,
       created_at: res.created_at
     } as Video;
   });

@@ -4,12 +4,16 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // يضمن تحميل الملفات بمسارات نسبية صحيحة
+  base: './', 
+  define: {
+    // هذا السطر يحل مشكلة عدم ظهور المفتاح في المتصفح على Netlify
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    minify: 'esbuild', // نستخدم esbuild المدمج لتجنب خطأ نقص مكتبة terser
+    minify: 'esbuild',
     target: 'esnext'
   },
   server: {
