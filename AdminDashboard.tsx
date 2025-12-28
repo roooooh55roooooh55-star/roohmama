@@ -30,7 +30,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [uploadCategory, setUploadCategory] = useState(categories[0] || 'هجمات مرعبة');
   const [uploadExternalLink, setUploadExternalLink] = useState('');
   
-  // تشخيص الحالة
   const [aiStatus, setAiStatus] = useState<'idle' | 'checking' | 'active' | 'error'>('idle');
   const [cloudinaryStatus, setCloudinaryStatus] = useState<'idle' | 'checking' | 'active' | 'error'>('idle');
 
@@ -213,14 +212,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           ))}
         </div>
 
-        {/* قسم تشخيص النظام المطور */}
         <div className="border-t border-white/10 pt-10">
            <h2 className="text-lg font-black text-white mb-6 flex items-center gap-2">
              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
              تشخيص النظام (المطور)
            </h2>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* فحص Gemini */}
               <div className="bg-neutral-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-4">
                  <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-gray-400">Gemini AI Engine</span>
@@ -234,16 +231,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  <div className="text-[10px] font-mono text-gray-500 truncate bg-black/40 p-2 rounded-lg">
                     Key: {process.env.API_KEY ? `${process.env.API_KEY.substring(0, 8)}...` : 'غير معرف'}
                  </div>
-                 <button 
-                   onClick={checkAISystem}
-                   disabled={aiStatus === 'checking'}
-                   className="w-full bg-white/5 border border-white/10 py-2 rounded-xl text-[10px] font-black hover:bg-white/10 transition-all"
-                 >
+                 <button onClick={checkAISystem} disabled={aiStatus === 'checking'} className="w-full bg-white/5 border border-white/10 py-2 rounded-xl text-[10px] font-black hover:bg-white/10 transition-all">
                    {aiStatus === 'checking' ? 'جاري الفحص...' : 'فحص حالة المفتاح'}
                  </button>
               </div>
-
-              {/* فحص Cloudinary */}
               <div className="bg-neutral-900/50 p-6 rounded-3xl border border-white/5 flex flex-col gap-4">
                  <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-gray-400">Cloudinary Storage</span>
@@ -254,14 +245,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {cloudinaryStatus === 'active' ? 'متاح' : cloudinaryStatus === 'error' ? 'فشل الجلب' : 'قيد الانتظار'}
                     </span>
                  </div>
-                 <div className="text-[10px] text-gray-500 italic">
-                    ملاحظة: تأكد من تفعيل "Resource List" في إعدادات Cloudinary.
-                 </div>
-                 <button 
-                   onClick={checkCloudinarySystem}
-                   disabled={cloudinaryStatus === 'checking'}
-                   className="w-full bg-white/5 border border-white/10 py-2 rounded-xl text-[10px] font-black hover:bg-white/10 transition-all"
-                 >
+                 <div className="text-[10px] text-gray-500 italic">ملاحظة: تأكد من تفعيل "Resource List" في إعدادات Cloudinary.</div>
+                 <button onClick={checkCloudinarySystem} disabled={cloudinaryStatus === 'checking'} className="w-full bg-white/5 border border-white/10 py-2 rounded-xl text-[10px] font-black hover:bg-white/10 transition-all">
                    {cloudinaryStatus === 'checking' ? 'جاري الجلب...' : 'فحص جلب الفيديوهات'}
                  </button>
               </div>
@@ -270,13 +255,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </div>
 
       {editingVideo && (
-        <VideoEditor 
-          video={editingVideo} 
-          categories={categories}
-          onClose={() => setEditingVideo(null)} 
-          onSave={saveEdit} 
-          onDelete={handleDelete}
-        />
+        <VideoEditor video={editingVideo} categories={categories} onClose={() => setEditingVideo(null)} onSave={saveEdit} onDelete={handleDelete} />
       )}
     </div>
   );
@@ -308,15 +287,12 @@ const VideoEditor: React.FC<{ video: Video, categories: string[], onClose: () =>
         <div className="space-y-4">
            <label className="text-[10px] font-black text-gray-500 uppercase mr-2">العنوان</label>
            <input type="text" value={v.title} onChange={e => setV({...v, title: e.target.value})} className="w-full bg-neutral-900 border border-white/10 rounded-2xl p-5 text-white" placeholder="العنوان" />
-           
            <label className="text-[10px] font-black text-gray-500 uppercase mr-2">القسم</label>
            <select value={v.category} onChange={e => setV({...v, category: e.target.value})} className="w-full bg-neutral-900 border border-white/10 rounded-2xl p-5 text-red-600 font-black">
              {categories.map(c => <option key={c} value={c}>{c}</option>)}
            </select>
-
            <label className="text-[10px] font-black text-gray-500 uppercase mr-2">الرابط الخارجي</label>
            <input type="text" value={v.external_link || ''} onChange={e => setV({...v, external_link: e.target.value})} className="w-full bg-neutral-900 border border-white/10 rounded-2xl p-5 text-white" placeholder="رابط الانتقال المخصص" />
-           
            <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/10">
               <input type="checkbox" checked={v.isFeatured} onChange={e => setV({...v, isFeatured: e.target.checked})} className="w-6 h-6 accent-red-600" id="feat-check" />
               <label htmlFor="feat-check" className="text-sm font-black text-white">تمييز كـ "رائج" (Neon Badge)</label>

@@ -43,14 +43,12 @@ const PrivacyPage: React.FC<PrivacyPageProps> = ({ onOpenAdmin }) => {
         </div>
       </div>
 
-      {/* الزر الخفي للمطور في الأسفل */}
       <div className="mt-20 flex flex-col items-center">
          <div 
            onClick={onOpenAdmin}
            className="w-full h-24 opacity-0 cursor-default"
            title="Developer Access"
          >
-           {/* زر مخفي تماماً يظهر فقط عند النقر أو الهوفر */}
          </div>
          <div className="w-12 h-1 bg-white/5 rounded-full"></div>
          <p className="text-[8px] text-gray-800 font-black uppercase tracking-[0.5em] mt-4">System ID: 0x5030775-GATE</p>
